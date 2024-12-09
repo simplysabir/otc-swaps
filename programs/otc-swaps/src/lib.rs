@@ -1,7 +1,8 @@
 use anchor_lang::prelude::*;
 
-pub mod instructions;
 pub mod error;
+pub mod events;
+pub mod instructions;
 pub mod state;
 
 use instructions::*;
@@ -16,17 +17,22 @@ pub mod otc_swaps {
         ctx: Context<InitializeSwap>,
         amount: u64,
         expiry_timestamp: i64,
-        whitelisted_buyers: [Pubkey;10],
+        whitelisted_buyers: [Pubkey; 10],
         recipient: Pubkey,
+        amount_in_sol: u64,
     ) -> Result<()> {
-        instructions::initialize_swap::handle(ctx, amount, expiry_timestamp, whitelisted_buyers, recipient)
+        instructions::initialize_swap::handle(
+            ctx,
+            amount,
+            expiry_timestamp,
+            whitelisted_buyers,
+            recipient,
+            amount_in_sol,
+        )
     }
 
-    pub fn execute_swap(
-        ctx: Context<ExecuteSwap>,
-        recipient_address: Pubkey,
-    ) -> Result<()> {
-        instructions::execute_swap::handle(ctx, recipient_address)
+    pub fn execute_swap(ctx: Context<ExecuteSwap>, amount_to_buy: u64) -> Result<()> {
+        instructions::execute_swap::handle(ctx, amount_to_buy)
     }
 
     pub fn cancel_swap(ctx: Context<CancelSwap>) -> Result<()> {
